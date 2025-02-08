@@ -1,0 +1,244 @@
+<!-- <!DOCTYPE html> -->
+<!-- <html lang="en"> -->
+<!-- <head> -->
+<!--     <meta charset="UTF-8"> -->
+<!--     <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+<!--     <title>Register and Verify OTP</title> -->
+<!-- </head> -->
+<!-- <body> -->
+<!---->
+<!--     <h1>Register</h1> -->
+<!---->
+<!--     <!-- Email Form --> -->
+<!--     <form id="registerForm" method="POST" action="https://shop-sphere-app.onrender.com/register/"> -->
+<!--         <label for="email">Email: </label> -->
+<!--         <input type="email" id="email" name="email" required> -->
+<!--         <button type="submit">Send OTP</button> -->
+<!--     </form> -->
+<!---->
+<!--     <!-- OTP Verification Form (Initially hidden) --> -->
+<!--     <div id="otpForm" style="display: none;"> -->
+<!--         <h2>Enter OTP</h2> -->
+<!--         <form id="verifyOtpForm" method="POST" action="https://shop-sphere-app.onrender.com/verify_otp/"> -->
+<!--             <label for="otp">OTP: </label> -->
+<!--             <input type="text" id="otp" name="otp" required> -->
+<!--             <button type="submit">Verify OTP</button> -->
+<!--         </form> -->
+<!--         <div id="otpMessage"></div> -->
+<!--     </div> -->
+<!---->
+<!--     <div id="errorMessage" style="color: red;"></div> -->
+<!---->
+<!--     <script> -->
+<!--         // Fetch CSRF token by making a GET request to Django -->
+<!--         fetch("https://shop-sphere-app.onrender.com/register/", { -->
+<!--             method: "GET", -->
+<!--             credentials: "include", -->
+<!--         }) -->
+<!--         .then(response => response.text()) -->
+<!--             .then((res) => console.log(res)); -->
+<!---->
+<!--          // Function to get CSRF token from cookies -->
+<!--         function getCookie(name) { -->
+<!--             let cookieValue = null; -->
+<!--             if (document.cookie && document.cookie !== "") { -->
+<!--                 const cookies = document.cookie.split(";"); -->
+<!--                 for (let i = 0; i < cookies.length; i++) { -->
+<!--                     const cookie = cookies[i].trim(); -->
+<!--                     if (cookie.substring(0, name.length + 1) === (name + '=')) { -->
+<!--                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1)); -->
+<!--                         break; -->
+<!--                     } -->
+<!--                 } -->
+<!--             } -->
+<!--             console.log("cookie:", cookieValue); -->
+<!--             return cookieValue; -->
+<!--         } -->
+<!---->
+<!--         const csrftoken = getCookie("csrftoken"); -->
+<!--         console.log(csrftoken); -->
+<!---->
+<!--         // Handle email registration form submission -->
+<!--         document.getElementById("registerForm").addEventListener("submit", function(event) { -->
+<!--             event.preventDefault(); // Prevent form submission -->
+<!--             let email = document.getElementById("email").value; -->
+<!--             fetch("https://shop-sphere-app.onrender.com/register/", { -->
+<!--                 method: "POST", -->
+<!--                 headers: { -->
+<!--                     "Content-Type": "application/json", -->
+<!--                     "X-CSRFToken": csrftoken, // Include CSRF token in the headers -->
+<!--                 }, -->
+<!--                 credentials: "include", -->
+<!--                 body: JSON.stringify({ email: email }), -->
+<!--             }) -->
+<!--             .then(response => response.json()) -->
+<!--             .then(data => { -->
+<!--                 if (data.success) { -->
+<!--                     // Show OTP form on successful OTP sent -->
+<!--                     document.getElementById("otpForm").style.display = "block"; -->
+<!--                     document.getElementById("errorMessage").textContent = ""; // Clear any previous error messages -->
+<!--                 } else { -->
+<!--                     // Show error message if OTP wasn't sent successfully -->
+<!--                     document.getElementById("errorMessage").textContent = data.message; -->
+<!--                 } -->
+<!--             }) -->
+<!--             .catch(error => { -->
+<!--                 console.log(error); -->
+<!--                 document.getElementById("errorMessage").textContent = "An error occurred while sending OTP."; -->
+<!--             }); -->
+<!--         }); -->
+<!---->
+<!--         // Handle OTP verification form submission -->
+<!--         document.getElementById("verifyOtpForm").addEventListener("submit", function(event) { -->
+<!--             event.preventDefault(); // Prevent form submission -->
+<!--             let email = document.getElementById("email").value; -->
+<!--             let otp = document.getElementById("otp").value; -->
+<!---->
+<!--             fetch("https://shop-sphere-app.onrender.com/verify_otp/", { -->
+<!--                 method: "POST", -->
+<!--                 headers: { -->
+<!--                     "Content-Type": "application/json", -->
+<!--                     "X-CSRFToken": csrftoken, // Include CSRF token in the headers -->
+<!--                 }, -->
+<!--                 credentials: "include", -->
+<!--                 body: JSON.stringify({ email: email, otp: otp }), -->
+<!--             }) -->
+<!--             .then(response => response.json()) -->
+<!--             .then(data => { -->
+<!--                 const otpMessageDiv = document.getElementById("otpMessage"); -->
+<!--                 if (data.success) { -->
+<!--                     otpMessageDiv.style.color = "green"; -->
+<!--                     otpMessageDiv.textContent = data.message; -->
+<!--                 } else { -->
+<!--                     otpMessageDiv.style.color = "red"; -->
+<!--                     otpMessageDiv.textContent = data.message; -->
+<!--                 } -->
+<!--             }) -->
+<!--             .catch(error => { -->
+<!--                 document.getElementById("otpMessage").textContent = "An error occurred during OTP verification."; -->
+<!--             }); -->
+<!--         }); -->
+<!--     </script> -->
+<!---->
+<!-- </body> -->
+<!-- </html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Registration</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Register</button>
+    </form>
+    <p id="errorMessage" style="color: red;"></p>
+    
+    <div id="otpForm" style="display: none;">
+        <h2>Enter OTP</h2>
+        <input type="text" id="otp" name="otp" required>
+        <button id="verifyOtp">Verify</button>
+    </div>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            console.log(document.cookie);
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+                        break;
+                    }
+                }
+            }
+
+            return cookieValue;
+        }
+
+        fetch("https://shop-sphere-app.onrender.com/register/", {  // Initial GET request
+            method: "GET",
+            credentials: "include",
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            // ✅ Extract CSRF token from response headers
+            // const csrftoken = response.headers.get("X-CSRFToken"); 
+            const csrftoken = getCookie("csrftoken");
+            console.log(csrftoken);
+            
+            if (!csrftoken) {
+                console.error("CSRF token not found in headers!");
+                document.getElementById("errorMessage").textContent = "CSRF token not found. Please refresh the page.";
+                return;
+            }
+            
+            console.log("CSRF Token from header:", csrftoken);
+            
+            document.getElementById("registerForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const email = document.getElementById("email").value;
+
+                fetch("https://shop-sphere-app.onrender.com/register/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrftoken,  // ✅ Use token from headers
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({ email: email }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("otpForm").style.display = "block";
+                        document.getElementById("errorMessage").textContent = ""; 
+                    } else {
+                        document.getElementById("errorMessage").textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById("errorMessage").textContent = "An error occurred while sending OTP.";
+                });
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching CSRF token:", error);
+            document.getElementById("errorMessage").textContent = "Error fetching CSRF token. Please refresh the page.";
+        });
+    </script>
+</body>
+</html>
+
